@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:energie4you/widgets/app_bar_container.dart';
 import 'package:energie4you/db/defect.dart';
@@ -40,87 +42,96 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
     return Scaffold(
       appBar: AppBarContainer(),
       body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Form(
-              key: _formKey,
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextFormField(
-                  controller: mechanicController,
-                  decoration: const InputDecoration(
-                    helperText: 'Enter the name of the mechanic who looked at the\ndefect here.',
-                    labelText: 'Mechanic name',
-                  ),            
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the name of the mechanic';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: defectDescriptionController,
-                  decoration: const InputDecoration(
-                    helperText: 'Enter a description explaining the defect.',
-                    labelText: 'Defect description',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter at least a small description explaining the defect.';
-                    }
-                    return null;
-                  },
-                  minLines: 5,
-                  maxLines: 5,
-                ),
-                Column(
-                  children: List.generate(CategorieChoices.values.length, (index){
-                    return ListTile(
-                      title: Text(CategorieChoices.values[index].toString().replaceAll("CategorieChoices.", "").toUpperCase()),
-                      leading: Radio<CategorieChoices>(
-                        value: CategorieChoices.values[index],
-                        groupValue: _categorieChoice,
-                        onChanged: (CategorieChoices? value) {
-                          setState(() {
-                            _categorieChoice = value;
-                          });
-                        },
-                      ),
-                    ); 
-                  }),
-                ),
-                TextButton(
-                  onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        String mechanicName = mechanicController.text;
-                        String defectDescription = defectDescriptionController.text;
-                        String categorie = _categorieChoice.toString();
-                        String _imagePath = widget.imagePath;
-
-                        try {
-                          addDefect(mechanicName, defectDescription, categorie, _imagePath);
-                        } catch(e) {
-                          print(e);
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 30),
+          child: Column(
+            children: [
+              Container(
+                child: Image.file(File(widget.imagePath), height: 250, width: 250),
+                
+              ),
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    TextFormField(
+                      controller: mechanicController,
+                      decoration: const InputDecoration(
+                        helperText: 'Enter the name of the mechanic who looked at the\ndefect here.',
+                        labelText: 'Mechanic name',
+                      ),            
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the name of the mechanic';
                         }
-                      }
-                  }, 
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
-                    color: Theme.of(context).primaryColor,
-                    child: Text(
-                      "Save",
-                      style: TextStyle(color: Colors.white)
+                        return null;
+                      },
                     ),
-                  ),
-                )
-              ],
-            ),
-          ),            
-          ],
-        )
-      )
+                    TextFormField(
+                        controller: defectDescriptionController,
+                        decoration: const InputDecoration(
+                        helperText: 'Enter a description explaining the defect.',
+                        labelText: 'Defect description',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter at least a small description explaining the defect.';
+                        }
+                        
+                        return null;
+                      },
+                      minLines: 5,
+                      maxLines: 5,
+                    ),
+                    Column(
+                      children: List.generate(CategorieChoices.values.length, (index) {
+                        return ListTile(
+                            title: Text(CategorieChoices.values[index].toString().replaceAll("CategorieChoices.", "").toUpperCase()),
+                            leading: Radio<CategorieChoices>(
+                            value: CategorieChoices.values[index],
+                            groupValue: _categorieChoice,
+                            onChanged: (CategorieChoices? value) {
+                              setState(() {
+                                _categorieChoice = value;
+                              });
+                            },
+                          ),
+                        ); 
+                      }),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          String mechanicName = mechanicController.text;
+                          String defectDescription = defectDescriptionController.text;
+                          String categorie = _categorieChoice.toString();
+                          String _imagePath = widget.imagePath;
+
+                          try {
+                            addDefect(mechanicName, defectDescription, categorie, _imagePath);
+                          } catch(e) {
+                            print(e);
+                          }
+                        }
+                      }, 
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(35, 10, 35, 10),
+                        margin: EdgeInsets.symmetric(vertical:20),
+                        color: Theme.of(context).primaryColor,
+                        child: Text(
+                          "Save",
+                          style: TextStyle(color: Colors.white)
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

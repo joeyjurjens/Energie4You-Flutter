@@ -70,7 +70,8 @@ class _CategoriesPictureScreenState extends State<CategoriesPictureScreen> {
               onPressed: () {
                 print("HELLO WORLD!");
               },
-              child: Image.file(File(imagePath))),
+              child: Image.file(File(imagePath))
+            ),
           ),
         );
       }),

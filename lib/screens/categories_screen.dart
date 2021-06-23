@@ -43,17 +43,20 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget makeBody() {
     if(isLoading) {
       return Text("Loading...");
-    } else {
+    } else if(this.categories.length > 0) {
       return getAllDefectCategories();
+    } else {
+      return Center(
+        child: Text("You have not taken any pictures yet.")
+      );
     }
   }
 
 
   ListView getAllDefectCategories() {
     return ListView.builder(
-      itemCount: categories.length,
+      itemCount: this.categories.length,
       itemBuilder: (BuildContext context, int position) {
-        if(categories.length > 0) {
           return Container(
             padding: EdgeInsets.symmetric(vertical: 60),
             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 70),
@@ -63,24 +66,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => CategoriesPictureScreen(
-                      categorieString: categories[position]["categorie"].toString(),
+                      categorieString: this.categories[position]["categorie"].toString(),
                     ),
                   ),
                 );            
             },
             child: Text(
-              categories[position]["categorie"].toString().replaceAll("CategorieChoices.", "").toUpperCase(),
+              this.categories[position]["categorie"].toString().replaceAll("CategorieChoices.", "").toUpperCase(),
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)
             )
             ),
           );
-        } else {
-          return Container(
-            child: Center(
-              child: Text("You have no pictures taken yet."),
-            ),
-          );
-        }
       },
     );
 	}
