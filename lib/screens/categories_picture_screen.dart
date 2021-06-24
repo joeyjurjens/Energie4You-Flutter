@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:energie4you/widgets/app_bar_container.dart';
 import 'package:energie4you/db/defect.dart';
 import 'package:energie4you/model/defect.dart';
+import 'package:energie4you/Screens/use_this_picture_screen.dart';
 
 class CategoriesPictureScreen extends StatefulWidget {
   final String categorieString;
@@ -68,7 +69,7 @@ class _CategoriesPictureScreenState extends State<CategoriesPictureScreen> {
             padding: EdgeInsets.all(10),
             child: TextButton(
               onPressed: () {
-                print("HELLO WORLD!");
+                Navigator.of(context).push(MaterialPageRoute(builder: (builder)=> UseThisPictureForm(imagePath: imagePath, defectInstance: defectInstance,)));
               },
               child: Image.file(File(imagePath))
             ),

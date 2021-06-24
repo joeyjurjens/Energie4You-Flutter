@@ -50,7 +50,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           if (snapshot.connectionState == ConnectionState.done) {
             return CameraPreview(_controller);
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           }
         },
       ),
@@ -61,7 +61,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             await _initializeControllerFuture;
             XFile image = await _controller.takePicture();
             final documentsDirectory = await getApplicationDocumentsDirectory();
-            print(image.hashCode.toString());
             final imagePath = documentsDirectory.path + "/" + image.hashCode.toString();
             image.saveTo(imagePath);
 
@@ -77,7 +76,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             print(e);
           }
         },
-        child: const Icon(Icons.camera_alt),
+        child: Icon(Icons.camera_alt),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
