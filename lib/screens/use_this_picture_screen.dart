@@ -36,6 +36,7 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
   TextEditingController defectDescriptionController = TextEditingController();
   late CategorieChoices? _categorieChoice = null;
   late Position deviceLocation;
+  bool changedCategorieChoice = false;
   bool isLoading = false;  
   bool hasDefectInstance = false;
 
@@ -201,9 +202,10 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
                     ),
                     Column(
                       children: List.generate(CategorieChoices.values.length, (index) {
-                        if(hasDefectInstance) {
+                        if(hasDefectInstance && !changedCategorieChoice) {
                           if(CategorieChoices.values[index].toString() == widget.defectInstance?.categorie.toString()) {
                             _categorieChoice = CategorieChoices.values[index];
+                            print(_categorieChoice);
                           }
                         }
                         return ListTile(
@@ -212,6 +214,9 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
                             value: CategorieChoices.values[index],
                             groupValue: _categorieChoice,
                             onChanged: (CategorieChoices? value) {
+                              setState(() {
+                                changedCategorieChoice = true;
+                              });
                               setState(() {
                                 _categorieChoice = value;
                               });
