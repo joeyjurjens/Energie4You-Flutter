@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:energie4you/widgets/app_bar_container.dart';
+import 'package:energie4you/widgets/loading_circle.dart';
 import 'package:energie4you/db/defect.dart';
 import 'package:energie4you/screens/categories_picture_screen.dart';
 
@@ -42,7 +43,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   Widget makeBody() {
     if(isLoading) {
-      return Text("Loading...");
+      return LoadingCircle();
     } else if(this.categories.length > 0) {
       return getAllDefectCategories();
     } else {

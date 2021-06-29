@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:energie4you/widgets/loading_circle.dart';
 import 'package:flutter/material.dart';
 import 'package:energie4you/widgets/app_bar_container.dart';
 import 'package:energie4you/screens/home_screen.dart';
@@ -39,6 +40,7 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
   bool changedCategorieChoice = false;
   bool isLoading = false;  
   bool hasDefectInstance = false;
+  bool hasDeviceLocation = true;
 
   @override
   void dispose() {
@@ -51,16 +53,17 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
     super.initState(); 
 
     setState(() => isLoading = true);
+    
     // Only then we need to determine the location.
     if(widget.defectInstance == null) {
       _determinePosition();
     } else {
-      setState(() => isLoading = false);
       setState(() => hasDefectInstance = true);
-
       setState(() => mechanicController.text = widget.defectInstance!.mechanic_name);
       setState(() => defectDescriptionController.text = widget.defectInstance!.description);
     }
+
+    setState(() => isLoading = false);
   }
 
   Future _determinePosition() async {
@@ -69,24 +72,28 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      print("Service disabled");
+      setState(() => hasDeviceLocation = false);
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        print("Permission denied.");
+        setState(() => hasDeviceLocation = false);
       }
     }
     
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
+      print("Permission denied for ever.");
+      setState(() => hasDeviceLocation = false);
     }
 
     this.deviceLocation = await Geolocator.getCurrentPosition();
     setState(() => isLoading = false);
+
+    return Future.value(true);
   }
 
   @override
@@ -94,14 +101,29 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
     // Build a Form widget using the _formKey created above.
     return Scaffold(
       appBar: AppBarContainer(),
-      body: isLoading ? Text("Loading...") : SingleChildScrollView(
+      body: isLoading ? LoadingCircle() : !this.hasDeviceLocation ? 
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                child: TextButton(
+                  child: Text("Grant location permission in settings"),
+                  onPressed: () {
+                    Geolocator.openLocationSettings();
+                  },
+                )
+              ),
+            ]
+          )
+        )
+        : SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: [
               Container(
                 child: Image.file(File(widget.imagePath), height: 250, width: 250),
-                
               ),
               Form(
                 key: _formKey,

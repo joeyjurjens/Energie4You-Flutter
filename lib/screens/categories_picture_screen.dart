@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:energie4you/widgets/app_bar_container.dart';
+import 'package:energie4you/widgets/loading_circle.dart';
 import 'package:energie4you/db/defect.dart';
 import 'package:energie4you/model/defect.dart';
 import 'package:energie4you/Screens/use_this_picture_screen.dart';
@@ -50,9 +51,7 @@ class _CategoriesPictureScreenState extends State<CategoriesPictureScreen> {
 
   Widget makeBody() {
     if(isLoading) {
-      return Center(
-        child: Text("Loading..."),
-      );
+      return LoadingCircle();
     } else {
       return getAllPicturesListView();
     }
