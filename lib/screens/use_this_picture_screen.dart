@@ -179,7 +179,7 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter at least a small description explaining the defect.';
+                              return 'Please enter at least a small description\nexplaining the defect.';
                             }
                             
                             return null;
@@ -265,11 +265,6 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
                           } catch(e) {
                             print(e);
                           }
-
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute<void>(builder: (BuildContext context) => const HomeScreen()),
-                            ModalRoute.withName(''),                            
-                          );
                         }
                       }, 
                       child: Container(
@@ -334,7 +329,7 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
     final Email email = Email(
       body: body,
       subject: 'Energie4You - Defect',
-      recipients: ['example@example.com'],
+      recipients: ['joeyjurjens@gmail.com'],
       attachmentPaths: [instance.imagePath],
       isHTML: false,
     );
@@ -348,6 +343,9 @@ class UseThisPictureFormState extends State<UseThisPictureForm> {
 
   void updateDefect(mechanicName, defectDescription, categorie, imagePath, latLng) async {
     await updateDefectAsync(mechanicName, defectDescription, categorie, imagePath, latLng);
+    await ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Updated succesfully!'))
+    );
   }
 
   void deleteDefect(instance) async {

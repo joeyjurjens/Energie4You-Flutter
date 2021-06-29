@@ -48,7 +48,16 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return CameraPreview(_controller);
+            final mediaSize = MediaQuery.of(context).size;
+            final scale = 1 / (_controller.value.aspectRatio * mediaSize.aspectRatio);
+            return ClipRect(
+              clipper: MediaSizeClipper(mediaSize),
+              child: Transform.scale(
+                scale: scale,
+                alignment: Alignment.topCenter,
+                child: CameraPreview(_controller),
+              ),
+            );
           } else {
             return Center(child: CircularProgressIndicator());
           }
@@ -80,5 +89,21 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+}
+
+// Clipper that allows the camera to be full screen with no weird stretches!
+class MediaSizeClipper extends CustomClipper<Rect> {
+  final Size mediaSize;
+  const MediaSizeClipper(this.mediaSize);
+  
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTWH(0, 0, mediaSize.width, mediaSize.height);
+  }
+  
+  @override
+  bool shouldReclip(CustomClipper<Rect> oldClipper) {
+    return true;
   }
 }
